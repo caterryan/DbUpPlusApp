@@ -1,10 +1,4 @@
-﻿using DbUp.Engine;
-using DbUp;
-using DbUp.ScriptProviders;
-using System.Runtime.CompilerServices;
-using DbUp.Helpers;
-
-namespace DbUpPlus.Library;
+﻿namespace DbUpPlus.Library;
 
 public static class RunOneTime
 {

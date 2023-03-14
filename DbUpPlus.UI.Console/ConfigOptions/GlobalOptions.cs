@@ -3,7 +3,7 @@
 internal class GlobalOptions
 {
     public const string ConfigName = "DbUpOptions:GlobalOptions";
-    public string ConnectionString { get; set; }
-    public string ScriptsFoldersPaths { get; set; }
+    public string? ConnectionString { get; set; }
+    public string? ScriptsFoldersPaths { get; set; }
 }
 

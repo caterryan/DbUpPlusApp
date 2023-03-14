@@ -40,7 +40,10 @@ internal class RunOneTimeCommand : Command
         {
             var exitCode = context.ExitCode;
 
-            //exitCode = RunOneTime.Run();
+            //exitCode = RunOneTime.Run(
+            //    _globalOptions.ConnectionString, 
+            //    _globalOptions.ScriptsFoldersPaths, 
+            //    _runOneTimeOptions.DropDatabase);
 
             _logger.LogError($"{nameof(_globalOptions.ConnectionString)}: {_globalOptions.ConnectionString}");
             _logger.LogError($"{nameof(_globalOptions.ScriptsFoldersPaths)}: {_globalOptions.ScriptsFoldersPaths}");

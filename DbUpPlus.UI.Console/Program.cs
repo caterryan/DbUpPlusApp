@@ -1,4 +1,7 @@
-﻿namespace DbUpPlus.UI.Cli;
+﻿using Microsoft.Extensions.Configuration;
+using System.Reflection;
+
+namespace DbUpPlus.UI.Cli;
 
 internal class Program
 {
@@ -10,6 +13,10 @@ internal class Program
 
     private static Action<IHostBuilder> GetConfigureHost() =>
         builder => builder
+        .ConfigureHostConfiguration((config) =>
+        {
+            //config.AddUserSecrets(Assembly.GetExecutingAssembly());
+        })
         .ConfigureServices((context, services) =>
         {
             // Register Config Options
