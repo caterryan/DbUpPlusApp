@@ -13,7 +13,7 @@ internal class RunOneTimeCommand : Command
 
     private Option GetDropDatabaseOption()
     {
-        var dropDatabaseOption = new Option<bool>(name: $"--{RunOneTimeOptions.ConfigName}:{nameof(RunOneTimeOptions.DropDatabase)}")
+        var dropDatabaseOption = new Option<bool>(name: $"--{RunOneTimeOptions.ConfigurationSectionName}:{nameof(RunOneTimeOptions.DropDatabase)}")
         {
             Description = "OPTIONAL - Drops the existing database - Default: false",
         };
@@ -22,6 +22,8 @@ internal class RunOneTimeCommand : Command
 
     public new class Handler : ICommandHandler
     {
+        private int _exitCode;
+
         private readonly GlobalOptions _globalOptions;
         private readonly RunOneTimeOptions _runOneTimeOptions;
         private readonly ILogger<Handler> _logger;
@@ -31,22 +33,56 @@ internal class RunOneTimeCommand : Command
             IOptions<RunOneTimeOptions> runOneTimeOptions,
             ILogger<Handler> logger)
         {
-            _globalOptions = globalOptions.Value;
-            _runOneTimeOptions = runOneTimeOptions.Value;
             _logger = logger;
+
+            try
+            {
+                _globalOptions = globalOptions.Value;
+            }
+            catch (OptionsValidationException ex)
+            {
+                _exitCode = 1;
+                foreach (string failure in ex.Failures)
+                {
+                    _logger.LogError(failure);
+                }
+            }
+
+            try
+            {
+                _runOneTimeOptions = runOneTimeOptions.Value;
+            }
+            catch (OptionsValidationException ex)
+            {
+                _exitCode = 1;
+                foreach (string failure in ex.Failures)
+                {
+                    _logger.LogError(failure);
+                }
+            }
         }
 
         public int Invoke(InvocationContext context)
         {
-            var exitCode = context.ExitCode;
+            _exitCode = context.ExitCode;
 
-            //exitCode = RunOneTime.Run();
+            if (_exitCode == 0)
+            {
+                DirectoryInfo scriptsFoldersDirectory = new(_globalOptions.ScriptsFoldersPaths);
 
-            _logger.LogError($"{nameof(_globalOptions.ConnectionString)}: {_globalOptions.ConnectionString}");
-            _logger.LogError($"{nameof(_globalOptions.ScriptsFoldersPaths)}: {_globalOptions.ScriptsFoldersPaths}");
-            _logger.LogError($"{nameof(_runOneTimeOptions.DropDatabase)}: {_runOneTimeOptions.DropDatabase}");
+                _exitCode = RunOneTime.Run(
+                    _globalOptions.ConnectionString,
+                    scriptsFoldersDirectory.FullName,
+                    _runOneTimeOptions.DropDatabase);
+            }
 
-            return exitCode;
+            if (_exitCode != 0)
+            {
+                _logger.LogError($"Failed to successfully complete {nameof(RunOneTimeCommand)}.");
+                return _exitCode;
+            }
+
+            return _exitCode;
         }
 
         public Task<int> InvokeAsync(InvocationContext context) => Task.FromResult(Invoke(context));

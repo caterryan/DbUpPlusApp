@@ -1,8 +1,4 @@
-﻿using DbUp.Engine;
-using DbUp;
-using DbUp.ScriptProviders;
-using System.Runtime.CompilerServices;
-using DbUp.Helpers;
+﻿using System.Net.Sockets;
 
 namespace DbUpPlus.Library;
 
@@ -10,25 +6,28 @@ public static class RunOneTime
 {
     public static int Run(string connectionString, string scriptsFoldersPathString, bool dropDatabase)
     {
-        int exitCode = 0;
+        int exitCode;
 
-        DirectoryInfo scriptsFoldersPath = new DirectoryInfo(scriptsFoldersPathString);
+        try
+        {
+            if (dropDatabase)
+                Helpers.DropDatabase(connectionString);
 
-
-
-        if (!scriptsFoldersPath.Exists)
-            throw new ArgumentException($"Invalid Input: path to script folders is not a valid directory '{scriptsFoldersPath.FullName}'");
-
-        if (dropDatabase)
-            Helpers.DropDatabase(connectionString);
-
-        EnsureDatabase.For.PostgresqlDatabase(connectionString);
+            EnsureDatabase.For.PostgresqlDatabase(connectionString);
+        }
+        catch (SocketException ex)
+        {
+            Helpers.ShowFailure(nameof(RunOneTime), ex); 
+            exitCode = 1;
+            return exitCode;
+        }
+        
 
         UpgradeEngine upgrader = DeployChanges.To
         .PostgresqlDatabase(connectionString)
         .WithScriptsFromFileSystem
         (
-            path: scriptsFoldersPath.FullName, 
+            path: scriptsFoldersPathString, 
             options: new FileSystemScriptOptions
             {
                 IncludeSubDirectories = true,
@@ -44,9 +43,15 @@ public static class RunOneTime
         DatabaseUpgradeResult result = upgrader.PerformUpgrade();
 
         if (!result.Successful)
+        {
             Helpers.ShowFailure(nameof(RunOneTime), result.Error);
+            exitCode = 1;
+        }
         else
+        {
             Helpers.ShowSuccess(nameof(RunOneTime));
+            exitCode = 0;
+        }
 
         return exitCode;
     }

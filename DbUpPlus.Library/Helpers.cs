@@ -1,10 +1,4 @@
-﻿using DbUp;
-using DbUp.Engine;
-using DbUp.Helpers;
-using Npgsql;
-using System.Reflection;
-
-namespace DbUpPlus.Library;
+﻿namespace DbUpPlus.Library;
 
 public static class Helpers
 {
