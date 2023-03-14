@@ -36,11 +36,15 @@ internal class Program
                 ServiceDescriptor.Singleton
                 <IValidateOptions<GlobalOptions>, GlobalOptionsValidationsConnectionString>());
             #endregion
-            #region Service Registration
+            #region Service Registrations
+            
             #endregion
 
         })
+            #region Command Handler Registrations
+
         .UseCommandHandler<RunOneTimeCommand, RunOneTimeCommand.Handler>();
+            #endregion
 
     private static Func<string[], IHostBuilder> GetHostBuilderFactory(string[] args) =>
         _ => Host.CreateDefaultBuilder(args);

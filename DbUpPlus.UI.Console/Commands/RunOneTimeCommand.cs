@@ -64,18 +64,23 @@ internal class RunOneTimeCommand : Command
 
         public int Invoke(InvocationContext context)
         {
-            if (_exitCode != 0)
+            _exitCode = context.ExitCode;
+
+            if (_exitCode == 0)
             {
-                _logger.LogError($"Failed to successfully complete {nameof(RunOneTimeCommand)}");
-                return _exitCode;
+                DirectoryInfo scriptsFoldersDirectory = new(_globalOptions.ScriptsFoldersPaths);
+
+                _exitCode = RunOneTime.Run(
+                    _globalOptions.ConnectionString,
+                    scriptsFoldersDirectory.FullName,
+                    _runOneTimeOptions.DropDatabase);
             }
 
-            DirectoryInfo scriptsFoldersDirectory = new(_globalOptions.ScriptsFoldersPaths);
-
-            _exitCode = RunOneTime.Run(
-                _globalOptions.ConnectionString,
-                scriptsFoldersDirectory.FullName,
-                _runOneTimeOptions.DropDatabase);
+            if (_exitCode != 0)
+            {
+                _logger.LogError($"Failed to successfully complete {nameof(RunOneTimeCommand)}.");
+                return _exitCode;
+            }
 
             return _exitCode;
         }

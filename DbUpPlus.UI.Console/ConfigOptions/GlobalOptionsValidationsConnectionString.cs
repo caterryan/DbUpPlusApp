@@ -25,7 +25,7 @@ sealed partial class GlobalOptionsValidationsConnectionString : IValidateOptions
             failure.AppendLine(
                 $"""
                 Invalid {nameof(_options.ConnectionString)}: {_options.ConnectionString}.
-                ConnectionString Format: User ID=USERNAME;Password=PASSWORD;Host=HOST;Port=PORT;Database=DATABASE;
+                ConnectionString Format: Username=USERNAME;Password=PASSWORD;Host=HOST;Port=PORT;Database=DATABASE;
                 """);
         }
         
@@ -37,7 +37,7 @@ sealed partial class GlobalOptionsValidationsConnectionString : IValidateOptions
         : ValidateOptionsResult.Success;
     }
 
-    [GeneratedRegex(@"^User ID=(\S*);Password=(\S*);Host=(\S*);Port=(\S*);Database=(\S*);$")]
+    [GeneratedRegex(@"^Username=(\S*);Password=(\S*);Host=(\S*);Port=(\S*);Database=(\S*);$")]
     private static partial Regex ValidationRegex();
 
 }

@@ -73,4 +73,6 @@ Create a local postgresql server
 
 Add to user secrets or as an environment variable
 
-	DbUpOptions:GlobalOptions:ConnectionString "User ID=postgres;Password=password;Host=localhost;Port=5432;Database=dbuptestdb;"
+	DbUpOptions:GlobalOptions:ConnectionString "
+	
+	=postgres;Password=password;Host=localhost;Port=5432;Database=dbuptestdb;"

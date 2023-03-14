@@ -35,7 +35,7 @@ internal class DbUpPlusRootCommand : RootCommand
         var connectionStringOption = new Option<string>(name: $"--{GlobalOptions.ConfigurationSectionName}:{nameof(GlobalOptions.ConnectionString)}")
         {
             ArgumentHelpName = "connectionString",
-            Description = """OPTIONAL - Format: "User ID=USERNAME;Password=PASSWORD;Host=HOST;Port=PORT;Database=DBNAME;" """,
+            Description = """OPTIONAL - Format: "Username=USERNAME;Password=PASSWORD;Host=HOST;Port=PORT;Database=DBNAME;" """,
         };
 
         return connectionStringOption;
