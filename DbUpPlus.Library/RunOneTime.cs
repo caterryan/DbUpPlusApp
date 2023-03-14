@@ -6,13 +6,6 @@ public static class RunOneTime
     {
         int exitCode = 0;
 
-        DirectoryInfo scriptsFoldersPath = new DirectoryInfo(scriptsFoldersPathString);
-
-
-
-        if (!scriptsFoldersPath.Exists)
-            throw new ArgumentException($"Invalid Input: path to script folders is not a valid directory '{scriptsFoldersPath.FullName}'");
-
         if (dropDatabase)
             Helpers.DropDatabase(connectionString);
 
@@ -22,7 +15,7 @@ public static class RunOneTime
         .PostgresqlDatabase(connectionString)
         .WithScriptsFromFileSystem
         (
-            path: scriptsFoldersPath.FullName, 
+            path: scriptsFoldersPathString, 
             options: new FileSystemScriptOptions
             {
                 IncludeSubDirectories = true,

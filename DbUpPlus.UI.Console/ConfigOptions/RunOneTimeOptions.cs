@@ -2,6 +2,6 @@
 
 internal class RunOneTimeOptions
 {
-    public const string ConfigName = "DbUpOptions:RunOneTimeOptions";
+    public const string ConfigurationSectionName = "DbUpOptions:RunOneTimeOptions";
     public bool DropDatabase { get; set; }
 }

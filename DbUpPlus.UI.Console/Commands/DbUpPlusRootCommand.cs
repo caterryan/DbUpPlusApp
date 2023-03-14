@@ -21,7 +21,7 @@ internal class DbUpPlusRootCommand : RootCommand
 
     private Option GetScriptsFoldersPathsOption()
     {
-        var scriptsFoldersPathsOption = new Option<string>(name: $"--{GlobalOptions.ConfigName}:{nameof(GlobalOptions.ScriptsFoldersPaths)}")
+        var scriptsFoldersPathsOption = new Option<string>(name: $"--{GlobalOptions.ConfigurationSectionName}:{nameof(GlobalOptions.ScriptsFoldersPaths)}")
         {
             ArgumentHelpName = "path",
             Description = """OPTIONAL - Path to sql script folders: .\onetime, .\anytime, .\everytime""",
@@ -32,7 +32,7 @@ internal class DbUpPlusRootCommand : RootCommand
 
     private Option GetConnectionStringOption()
     {
-        var connectionStringOption = new Option<string>(name: $"--{GlobalOptions.ConfigName}:{nameof(GlobalOptions.ConnectionString)}")
+        var connectionStringOption = new Option<string>(name: $"--{GlobalOptions.ConfigurationSectionName}:{nameof(GlobalOptions.ConnectionString)}")
         {
             ArgumentHelpName = "connectionString",
             Description = """OPTIONAL - Format: "User ID=USERNAME;Password=PASSWORD;Host=HOST;Port=PORT;Database=DBNAME;" """,

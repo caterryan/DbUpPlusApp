@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System.Reflection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace DbUpPlus.UI.Cli;
 
@@ -13,18 +13,31 @@ internal class Program
 
     private static Action<IHostBuilder> GetConfigureHost() =>
         builder => builder
-        .ConfigureHostConfiguration((config) =>
-        {
-            //config.AddUserSecrets(Assembly.GetExecutingAssembly());
-        })
         .ConfigureServices((context, services) =>
         {
-            // Register Config Options
             var config = context.Configuration;
-            services.Configure<GlobalOptions>(config.GetSection(GlobalOptions.ConfigName));
-            services.Configure<RunOneTimeOptions>(config.GetSection(RunOneTimeOptions.ConfigName));
 
-            // Register Services
+            #region Options Registration
+            services
+                .AddOptions<GlobalOptions>()
+                .Bind(config.GetSection(GlobalOptions.ConfigurationSectionName))
+                .ValidateDataAnnotations();
+
+            services
+                .AddOptions<RunOneTimeOptions>()
+                .Bind<RunOneTimeOptions>(config.GetSection(RunOneTimeOptions.ConfigurationSectionName));
+            #endregion
+            #region Options Validations Registration
+            services.TryAddEnumerable(
+                ServiceDescriptor.Singleton
+                <IValidateOptions<GlobalOptions>, GlobalOptionsValidationsScriptsFoldersPaths>());
+
+            services.TryAddEnumerable(
+                ServiceDescriptor.Singleton
+                <IValidateOptions<GlobalOptions>, GlobalOptionsValidationsConnectionString>());
+            #endregion
+            #region Service Registration
+            #endregion
 
         })
         .UseCommandHandler<RunOneTimeCommand, RunOneTimeCommand.Handler>();

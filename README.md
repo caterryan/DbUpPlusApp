@@ -65,3 +65,12 @@ The environment is set by assigning the environment variable DOTNET_{*environmen
 The environment can also be set by assigning the launch profile to any of the three provided profiles: Development, Staging, and Production. These can be selected in Visual Studio or by command line. For example:
 
 	dotnet run --launch-profile Staging DbUpPlus -- run -h
+
+## Testing
+Create a local postgresql server
+
+	docker run --name dbuptestdb -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres:latest
+
+Add to user secrets or as an environment variable
+
+	DbUpOptions:GlobalOptions:ConnectionString "User ID=postgres;Password=password;Host=localhost;Port=5432;Database=dbuptestdb;"
